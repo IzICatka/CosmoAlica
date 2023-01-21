@@ -1,6 +1,7 @@
 from aiogram import types, Dispatcher 
 from create_bot import dp, bot 
 from keyboards import kb_client
+from aiogram.types import ReplyKeyboardRemove
 
 #Команда старт
 async def command_start(message : types.Message):
@@ -18,7 +19,7 @@ async def CosmoAlica_open_command(message : types.Message):
 
 #Команда расположение
 async def CosmoAlica_place_command(message : types.Message):
-    await bot.send_message(message.from_user.id, 'ул. Научный центр, 5')
+    await bot.send_message(message.from_user.id, 'ул. Научный центр, 5', reply_markup = ReplyKeyboardRemove())
 
 #Добавление команд
 def register_handlers_client(dp : Dispatcher):
