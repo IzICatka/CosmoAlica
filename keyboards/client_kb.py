@@ -4,6 +4,7 @@ b1 = KeyboardButton('/Режим_работы')
 b2 = KeyboardButton('/Расположение')
 b3 = KeyboardButton('/Меню')
 
+
 #Заменяет клавиатуру на кнопки
 kb_client = ReplyKeyboardMarkup(resize_keyboard = True)
 
