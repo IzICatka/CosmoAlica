@@ -4,7 +4,8 @@ from aiogram import types
 from create_bot import dp, bot
 from aiogram import Dispatcher
 from aiogram.dispatcher.filters import Text
-
+from data_base import sqlite_db
+from keyboards import admin_kb
 ID = None
 
 class FSMAdmin(StatesGroup):
@@ -19,7 +20,7 @@ class FSMAdmin(StatesGroup):
 async def make_changes_command(message: types.Message):
     global ID
     ID = message.from_user.id
-    await bot.send_message(message.from_user.id, 'Введите команду')
+    await bot.send_message(message.from_user.id, 'Введите команду', reply_markup=admin_kb.button_case_admin)
     await message.delete()
 
 #Загрузка информации о планете
@@ -69,8 +70,9 @@ async def load_description(message: types.Message, state: FSMContext):
             data['description'] = message.text
     
     #Сохранение базы данных
-        async with state.proxy() as data:
-            await message.reply(str(data))
+        # async with state.proxy() as data:
+        #     await message.reply(str(data))
+        await sqlite_db.sql_add_command(state)
         await state.finish()
 
 
