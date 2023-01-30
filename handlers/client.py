@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher 
 from create_bot import dp, bot 
-from keyboards import kb_client
+from keyboards import kb_client, urlkb
 from aiogram.types import ReplyKeyboardRemove
 from data_base import sqlite_db
 
@@ -22,9 +22,13 @@ async def CosmoAlica_open_command(message : types.Message):
 async def CosmoAlica_place_command(message : types.Message):
     await bot.send_message(message.from_user.id, 'ул. Научный центр, 5', reply_markup = ReplyKeyboardRemove())
 
-@dp.message_handler(commands=['Меню'])
+# @dp.message_handler(commands=['Меню'])
 async def CosmoAlica_planets(message : types.Message):
     await sqlite_db.sql_read(message)
+
+# @dp.message_handler(commands='ссылки')
+async def url_command(message : types.Message):
+    await message.answer('Ссылки:', reply_markup = urlkb)
     
 
 #Добавление команд
@@ -33,6 +37,7 @@ def register_handlers_client(dp : Dispatcher):
     dp.register_message_handler(CosmoAlica_open_command, commands=['Режим_работы'])
     dp.register_message_handler(CosmoAlica_place_command, commands=['Расположение'])
     dp.register_message_handler(CosmoAlica_planets, commands=['Меню'])
+    dp.register_message_handler(url_command, commands=['ссылки'])
  
 
 
