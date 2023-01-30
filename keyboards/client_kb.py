@@ -18,3 +18,7 @@ urlButton2 = InlineKeyboardButton(text='Ссылка2', url='https://google.com'
 x = [InlineKeyboardButton(text='Ссылка3', url='https://google.com'), InlineKeyboardButton(text='Ссылка4', url='https://google.com'),\
     InlineKeyboardButton(text='Ссылка5', url='https://google.com')]
 urlkb.add(urlButton, urlButton2).row(*x)
+
+inkb = InlineKeyboardMarkup(row_width=1).add(InlineKeyboardButton(text='Like', callback_data='like_+1'),\
+    InlineKeyboardButton(text='DisLike', callback_data='like_-1'))
+
