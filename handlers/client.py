@@ -33,7 +33,16 @@ async def url_command(message : types.Message):
 # @dp.message_handler(commands='test')
 async def test_commands(message : types.Message):
     await message.answer('Заказ билетов', reply_markup=inkb)
-    
+
+@dp.callback_query_handler(text='like_+1')
+async def like(callback: types.CallbackQuery):
+    await callback.answer('Нравится')
+
+@dp.callback_query_handler(text='like_-1')
+async def dislike(callback: types.CallbackQuery):
+    await callback.answer('Не нравится')
+
+
 
 #Добавление команд
 def register_handlers_client(dp : Dispatcher):
@@ -43,6 +52,9 @@ def register_handlers_client(dp : Dispatcher):
     dp.register_message_handler(CosmoAlica_planets, commands=['Меню'])
     dp.register_message_handler(url_command, commands=['ссылки'])
     dp.register_message_handler(test_commands, commands=['test'])
+
+    
+    
  
 
 
