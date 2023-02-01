@@ -3,7 +3,9 @@ from create_bot import dp, bot
 from keyboards import kb_client, urlkb, inkb
 from aiogram.types import ReplyKeyboardRemove
 from data_base import sqlite_db
+from aiogram.dispatcher.filters import Text
 
+answ = dict()
 #Команда старт
 async def command_start(message : types.Message):
     try:
@@ -42,7 +44,15 @@ async def like(callback: types.CallbackQuery):
 async def dislike(callback: types.CallbackQuery):
     await callback.answer('Не нравится')
 
-
+# @dp.callback_querry_handler(Text(startwith='like'))
+# async def www_call(callback : types.CallbackQuery):
+#     res = int(callback.data.split('_')[1])
+#     if f'{callback.from_user.id}' not in answ:
+#         answ[f'{callback.from_user.id}'] = res
+#         await callback.answer('Вы проголосовали')
+#     else:
+#         await callback.answer('Вы уже проголосовали', show_alert=True)
+   
 
 #Добавление команд
 def register_handlers_client(dp : Dispatcher):
