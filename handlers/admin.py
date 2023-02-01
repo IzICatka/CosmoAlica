@@ -85,9 +85,12 @@ async def del_callback_run(callback_query: types.CallbackQuery):
 @dp.message_handler(commands='Удалить')
 async def delete_item(message: types.Message):
     if message.from_user.id == ID:
+        #Вывод данных из таблицы
         read = await sqlite_db.sql_read2()
         for ret in read:
+            #Отправка списка планет
             await bot.send_photo(message.from_user.id, ret[0], f'{ret[1]}\nОписание: {ret[2]}')
+            #Добавление кнопки удалить
             await bot.send_message(message.from_user.id, text='^^^', reply_markup=InlineKeyboardMarkup().\
                 add(InlineKeyboardButton(f'Удалить {ret[1]}', callback_data=f'del {ret[1]}'))) 
 

@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher 
 from create_bot import dp, bot 
-from keyboards import kb_client, urlkb, inkb
+from keyboards import kb_client, urlkb, inkb, first
 from aiogram.types import ReplyKeyboardRemove
 from data_base import sqlite_db
 from aiogram.dispatcher.filters import Text
@@ -9,7 +9,7 @@ answ = dict()
 #Команда старт
 async def command_start(message : types.Message):
     try:
-        await bot.send_message(message.from_user.id, 'Выберите планету, которую вы хотите посетить.', reply_markup = kb_client)
+        await bot.send_message(message.from_user.id, 'Здравствуйте, выберите команду:', reply_markup = first)
         await message.delete()
     except:
         await message.reply('Для оформления билетов напишите нашему боту: \nhttp://t.me/CosmoAlicaBot')
@@ -40,9 +40,12 @@ async def test_commands(message : types.Message):
 async def like(callback: types.CallbackQuery):
     await callback.answer('Нравится')
 
-@dp.callback_query_handler(text='like_-1')
-async def dislike(callback: types.CallbackQuery):
-    await callback.answer('Не нравится')
+
+
+@dp.callback_query_handler(text='zakaz')
+async def zakaz(callback: types.CallbackQuery):
+    await callback.message.answer('Выберите планету:')
+    await sqlite_db.sql_read(callback)
 
 # @dp.callback_querry_handler(Text(startwith='like'))
 # async def www_call(callback : types.CallbackQuery):
@@ -52,7 +55,18 @@ async def dislike(callback: types.CallbackQuery):
 #         await callback.answer('Вы проголосовали')
 #     else:
 #         await callback.answer('Вы уже проголосовали', show_alert=True)
-   
+
+# @dp.message_handler(commands='Удалить')
+# async def delete_item(message: types.Message):
+#         #Вывод данных из таблицы
+#         read = await sqlite_db.sql_read2()
+#         for ret in read:
+#             #Отправка списка планет
+#             await bot.send_photo(message.from_user.id, ret[0], f'{ret[1]}\nОписание: {ret[2]}')
+#             #Добавление кнопки удалить
+#             await bot.send_message(message.from_user.id, text='^^^', reply_markup=InlineKeyboardMarkup().\
+#                 add(InlineKeyboardButton(f'Удалить {ret[1]}', callback_data=f'del {ret[1]}'))) 
+
 
 #Добавление команд
 def register_handlers_client(dp : Dispatcher):

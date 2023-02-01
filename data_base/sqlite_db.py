@@ -18,9 +18,9 @@ async def sql_add_command(state):
         base.commit()
 
 
-async def sql_read(message):
+async def sql_read(callback):
     for ret in cur.execute('SELECT * FROM menu').fetchall():
-        await bot.send_photo(message.from_user.id, ret[0], f'{ret[1]}\nОписание: {ret[2]}')
+        await bot.send_photo(callback.from_user.id, ret[0], f'{ret[1]}\nОписание: {ret[2]}')
 
 async def sql_read2():
     return cur.execute('SELECT * FROM menu').fetchall()
