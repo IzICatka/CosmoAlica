@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher 
 from create_bot import dp, bot 
-from keyboards import kb_client, urlkb, inkb, first
+from keyboards import kb_client, urlkb, inkb, first, close_keyboard
 from aiogram.types import ReplyKeyboardRemove
 from data_base import sqlite_db
 from aiogram.dispatcher.filters import Text

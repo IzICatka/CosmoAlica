@@ -6,7 +6,7 @@ from aiogram import Dispatcher
 from aiogram.dispatcher.filters import Text
 from data_base import sqlite_db
 from keyboards import admin_kb
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardRemove
 
 ID = None
 
@@ -25,12 +25,15 @@ async def make_changes_command(message: types.Message):
     await bot.send_message(message.from_user.id, 'Введите команду', reply_markup=admin_kb.button_case_admin)
     await message.delete()
 
+
 #Загрузка информации о планете
 # @dp.message_handler(commands='Загрузить', state=None)
 async def cm_start(message : types.Message):
     if message.from_user.id == ID:
         await FSMAdmin.photo.set()
-        await message.reply('Загрузите фото')
+        await message.reply('Загрузите фото', reply_markup=ReplyKeyboardRemove())
+        
+        
 
 #Команда отмена
 # @dp.message_handler(state="*", commands='отмена')
