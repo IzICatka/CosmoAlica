@@ -30,7 +30,7 @@ zakaz_biletov = InlineKeyboardMarkup(text='Заказ билетов', callback_
 spisok_planet = InlineKeyboardMarkup(text='Список планет', callback_data='spisok')
 time_work = InlineKeyboardMarkup(text='Режим работы', callback_data='time')
 place_street = InlineKeyboardMarkup(text='Расположение', callback_data='place')
-help = InlineKeyboardMarkup(text='Служба поддержки', callback_data='support' )
+help = InlineKeyboardMarkup(text='О компании', callback_data='support' )
 first.add(zakaz_biletov, spisok_planet, time_work, place_street, help)
 
 

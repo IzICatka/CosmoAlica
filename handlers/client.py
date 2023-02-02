@@ -14,6 +14,9 @@ async def command_start(message : types.Message):
     except:
         await message.reply('Для оформления билетов напишите нашему боту: \nhttp://t.me/CosmoAlicaBot')
 
+async def menu(callback):
+    await bot.send_message(callback.from_user.id, 'Здравствуйте, выберите команду:', reply_markup = first)
+
 
 #Команда режим работы
 async def CosmoAlica_open_command(message : types.Message):
@@ -40,12 +43,38 @@ async def test_commands(message : types.Message):
 async def like(callback: types.CallbackQuery):
     await callback.answer('Нравится')
 
-
-
+#Основное меню
 @dp.callback_query_handler(text='zakaz')
 async def zakaz(callback: types.CallbackQuery):
     await callback.message.answer('Выберите планету:')
     await sqlite_db.sql_read(callback)
+    await menu(callback)
+
+
+@dp.callback_query_handler(text='spisok')
+async def spisok(callback: types.CallbackQuery):
+    await callback.message.answer('Список планет:')
+    await sqlite_db.sql_read(callback)
+    await menu(callback)
+
+@dp.callback_query_handler(text='time')
+async def time(callback: types.CallbackQuery):
+    await callback.message.answer('Вс-Чт с 9:00 до 20:00, Пт-Сб с 10:00 до 23:00')
+    await menu(callback)
+
+@dp.callback_query_handler(text='place')
+async def place(callback: types.CallbackQuery):
+    await callback.message.answer('ул. Научный центр, 5')
+    await menu(callback)
+
+@dp.callback_query_handler(text='support')
+async def support(callback: types.CallbackQuery):
+    await callback.message.answer('Коммпания CosmoAlica занимается путешествиями к планетам Солнечной системы.')
+    await menu(callback)
+
+
+
+
 
 # @dp.callback_querry_handler(Text(startwith='like'))
 # async def www_call(callback : types.CallbackQuery):
