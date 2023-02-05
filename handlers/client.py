@@ -35,7 +35,7 @@ async def menu2(message):
 @dp.callback_query_handler(text='zakaz')
 async def zakaz(callback: types.CallbackQuery):
     await FSM_Clients.account.set()
-    await callback.message.reply('Введите номер телефона (любое число):')
+    await callback.message.answer('Введите номер телефона (любое число):')
     
 
 #Загрузка названия
@@ -45,7 +45,7 @@ async def load_account(message: types.Message, state: FSMContext):
     async with state.proxy() as x:
         x['account'] = message.text
     await FSM_Clients.next()
-    await message.reply("Введите название планеты:")
+    await message.answer("Введите название планеты:")
 
 @dp.message_handler(state = FSM_Clients.planet)
 #Загрузка ответа в базу данных
@@ -53,7 +53,7 @@ async def load_planet(message: types.Message, state: FSMContext):
     async with state.proxy() as x:
         x['planet'] = message.text
     await FSM_Clients.next()
-    await message.reply('Введите имя:')
+    await message.answer('Введите имя:')
 
 @dp.message_handler(state = FSM_Clients.name_client)
 #Загрузка ответа в базу данных
@@ -61,7 +61,7 @@ async def load_planet(message: types.Message, state: FSMContext):
     async with state.proxy() as x:
         x['name_client'] = message.text
     await FSM_Clients.next()
-    await message.reply('Ваш заказ готов.')
+    await message.answer('Ваш заказ готов.')
     await sqlite_db.sql_add_client(state)
     await state.finish()
     
