@@ -10,6 +10,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeybo
 
 ID = None
 
+
 class FSMAdmin(StatesGroup):
      photo = State()
      name = State()

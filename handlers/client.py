@@ -4,8 +4,18 @@ from keyboards import kb_client, urlkb, inkb, first, close_keyboard
 from aiogram.types import ReplyKeyboardRemove
 from data_base import sqlite_db
 from aiogram.dispatcher.filters import Text
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
 
 answ = dict()
+
+
+
+
+class FSM_Clients(StatesGroup):
+     planet = State()
+     name_client = State()
+    #  id = State()
 #Команда старт
 async def command_start(message : types.Message):
     try:
@@ -17,40 +27,47 @@ async def command_start(message : types.Message):
 async def menu(callback):
     await bot.send_message(callback.from_user.id, 'Здравствуйте, выберите команду:', reply_markup = first)
 
-
-#Команда режим работы
-async def CosmoAlica_open_command(message : types.Message):
-    await bot.send_message(message.from_user.id, 'Вс-Чт с 9:00 до 20:00, Пт-Сб с 10:00 до 23:00')
-
-
-#Команда расположение
-async def CosmoAlica_place_command(message : types.Message):
-    await bot.send_message(message.from_user.id, 'ул. Научный центр, 5', reply_markup = ReplyKeyboardRemove())
-
-# @dp.message_handler(commands=['Меню'])
-async def CosmoAlica_planets(message : types.Message):
-    await sqlite_db.sql_read(message)
-
-# @dp.message_handler(commands='ссылки')
-async def url_command(message : types.Message):
-    await message.answer('Ссылки:', reply_markup = urlkb)
-
-# @dp.message_handler(commands='test')
-async def test_commands(message : types.Message):
-    await message.answer('Заказ билетов', reply_markup=inkb)
-
-@dp.callback_query_handler(text='like_+1')
-async def like(callback: types.CallbackQuery):
-    await callback.answer('Нравится')
+async def menu2(message):
+    await bot.send_message(message.from_user.id, 'Здравствуйте, выберите команду:', reply_markup = first)
 
 #Основное меню
 @dp.callback_query_handler(text='zakaz')
 async def zakaz(callback: types.CallbackQuery):
-    await callback.message.answer('Выберите планету:')
-    await sqlite_db.sql_read(callback)
-    await menu(callback)
+    await FSM_Clients.planet.set()
+    await callback.message.reply('Введите название планеты.')
+    
+
+#Загрузка названия
+@dp.message_handler(state = FSM_Clients.planet)
+#Загрузка ответа в базу данных
+async def load_planet(message: types.Message, state: FSMContext):
+    async with state.proxy() as x:
+        x['planet'] = message.text
+    await FSM_Clients.next()
+    await message.reply("Введите имя.")
+
+@dp.message_handler(state = FSM_Clients.name_client)
+#Загрузка ответа в базу данных
+async def load_name(message: types.Message, state: FSMContext):
+    async with state.proxy() as x:
+        x['name_client'] = message.text
+    await sqlite_db.sql_add_client(state)
+    await state.finish()
+    
 
 
+
+
+
+
+
+
+
+
+
+
+
+    
 @dp.callback_query_handler(text='spisok')
 async def spisok(callback: types.CallbackQuery):
     await callback.message.answer('Список планет:')
@@ -100,20 +117,13 @@ async def support(callback: types.CallbackQuery):
 #Добавление команд
 def register_handlers_client(dp : Dispatcher):
     dp.register_message_handler(command_start, commands=['start', 'help'])
-    dp.register_message_handler(CosmoAlica_open_command, commands=['Режим_работы'])
-    dp.register_message_handler(CosmoAlica_place_command, commands=['Расположение'])
-    dp.register_message_handler(CosmoAlica_planets, commands=['Меню'])
-    dp.register_message_handler(url_command, commands=['ссылки'])
-    dp.register_message_handler(test_commands, commands=['test'])
-
-    
     
  
 
 
 
-# @dp.message_handler()_
-# async def echo_send(message : types.Message):
-#     if message.text == message.text:
+@dp.message_handler()
+async def echo_send(message : types.Message):
+    if message.text == message.text:
 
-#         await message.answer('Здравствуйте, выберите планету, которую вы хотите посетить.')
+        await message.answer('Здравствуйте, выберите планету, которую вы хотите посетить.', reply_markup=first)
