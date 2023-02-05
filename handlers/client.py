@@ -13,8 +13,9 @@ answ = dict()
 
 
 class FSM_Clients(StatesGroup):
-     planet = State()
-     name_client = State()
+    account = State()
+    planet = State()
+    name_client = State()
     #  id = State()
 #Команда старт
 async def command_start(message : types.Message):
@@ -33,24 +34,34 @@ async def menu2(message):
 #Основное меню
 @dp.callback_query_handler(text='zakaz')
 async def zakaz(callback: types.CallbackQuery):
-    await FSM_Clients.planet.set()
-    await callback.message.reply('Введите название планеты.')
+    await FSM_Clients.account.set()
+    await callback.message.reply('Введите номер телефона (любое число):')
     
 
 #Загрузка названия
+@dp.message_handler(state = FSM_Clients.account)
+#Загрузка ответа в базу данных
+async def load_account(message: types.Message, state: FSMContext):
+    async with state.proxy() as x:
+        x['account'] = message.text
+    await FSM_Clients.next()
+    await message.reply("Введите название планеты:")
+
 @dp.message_handler(state = FSM_Clients.planet)
 #Загрузка ответа в базу данных
 async def load_planet(message: types.Message, state: FSMContext):
     async with state.proxy() as x:
         x['planet'] = message.text
     await FSM_Clients.next()
-    await message.reply("Введите имя.")
+    await message.reply('Введите имя:')
 
 @dp.message_handler(state = FSM_Clients.name_client)
 #Загрузка ответа в базу данных
-async def load_name(message: types.Message, state: FSMContext):
+async def load_planet(message: types.Message, state: FSMContext):
     async with state.proxy() as x:
         x['name_client'] = message.text
+    await FSM_Clients.next()
+    await message.reply('Ваш заказ готов.')
     await sqlite_db.sql_add_client(state)
     await state.finish()
     

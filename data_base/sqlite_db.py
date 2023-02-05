@@ -9,7 +9,7 @@ def sql_start():
         print('Data base connected OK!')
     #Создание таблицы, в которую будут записываться данные. 
     base.execute('CREATE TABLE IF NOT EXISTS menu(img TEXT, name TEXT PRIMARY KEY, description TEXT)')
-    base.execute('CREATE TABLE IF NOT EXISTS clients(planet TEXT, name_client TEXT PRIMARY KEY)')
+    base.execute('CREATE TABLE IF NOT EXISTS clients(account TEXT PRIMARY KEY, planet TEXT, name_client TEXT)')
     #Сохранение изменений
     base.commit()
 async def sql_add_command(state):
@@ -19,7 +19,7 @@ async def sql_add_command(state):
 
 async def sql_add_client(state):
     async with state.proxy() as x:
-        cur.execute('INSERT INTO clients VALUES (?, ?)', tuple(x.values()))
+        cur.execute('INSERT INTO clients VALUES (?, ?, ?)', tuple(x.values()))
         base.commit()
 
 
