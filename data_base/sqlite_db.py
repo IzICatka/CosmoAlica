@@ -32,6 +32,14 @@ async def sql_read(callback):
 async def sql_read2():
     return cur.execute('SELECT * FROM menu').fetchall()
 
+async def sql_read_clients():
+    return cur.execute('SELECT * FROM clients').fetchall()
+
 async def sql_delete_command(data):
     cur.execute('DELETE FROM menu WHERE name == ?', (data,))
+    base.commit()
+
+
+async def sql_delete_client(data):
+    cur.execute('DELETE FROM clients WHERE account == ?', (data,))
     base.commit()

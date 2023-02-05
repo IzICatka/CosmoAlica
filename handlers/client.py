@@ -6,6 +6,7 @@ from data_base import sqlite_db
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 answ = dict()
 
@@ -36,7 +37,7 @@ async def menu2(message):
 async def zakaz(callback: types.CallbackQuery):
     await FSM_Clients.account.set()
     await callback.message.answer('Введите номер телефона (любое число):')
-    
+
 
 #Загрузка названия
 @dp.message_handler(state = FSM_Clients.account)
@@ -61,11 +62,27 @@ async def load_planet(message: types.Message, state: FSMContext):
     async with state.proxy() as x:
         x['name_client'] = message.text
     await FSM_Clients.next()
-    await message.answer('Ваш заказ готов.')
+    await message.answer('Ваш заказ готов. Для редактирования таблицы клиентов введите команду (клиенты).')
     await sqlite_db.sql_add_client(state)
     await state.finish()
-    
 
+
+
+@dp.callback_query_handler(lambda x: x.data and x.data.startswith('del '))
+async def del_callback_run(callback_query: types.CallbackQuery):
+    await sqlite_db.sql_delete_client(callback_query.data.replace('del ', ''))
+    await callback_query.answer('Клиент удален из таблицы.', show_alert=True)
+
+@dp.message_handler(Text(equals='клиенты', ignore_case=True), state="*")
+async def delete_item(message: types.Message):
+        #Вывод данных из таблицы
+    await bot.send_message(message.from_id, 'Таблица клиентов:')
+    read = await sqlite_db.sql_read_clients()
+    for ret in read:
+        #Отправка списка клиентов
+        await bot.send_message(message.from_user.id, 'Данные клиента:\n' f'Номер телефона: {ret[0]}\nПланета: {ret[1]}\nИмя: {ret[2]}', reply_markup=InlineKeyboardMarkup().\
+            add(InlineKeyboardButton(f'Удалить клиента {ret[2]}', callback_data=f'del {ret[0]}')))
+    
 
 
 
@@ -99,31 +116,6 @@ async def place(callback: types.CallbackQuery):
 async def support(callback: types.CallbackQuery):
     await callback.message.answer('Коммпания CosmoAlica занимается путешествиями к планетам Солнечной системы.')
     await menu(callback)
-
-
-
-
-
-# @dp.callback_querry_handler(Text(startwith='like'))
-# async def www_call(callback : types.CallbackQuery):
-#     res = int(callback.data.split('_')[1])
-#     if f'{callback.from_user.id}' not in answ:
-#         answ[f'{callback.from_user.id}'] = res
-#         await callback.answer('Вы проголосовали')
-#     else:
-#         await callback.answer('Вы уже проголосовали', show_alert=True)
-
-# @dp.message_handler(commands='Удалить')
-# async def delete_item(message: types.Message):
-#         #Вывод данных из таблицы
-#         read = await sqlite_db.sql_read2()
-#         for ret in read:
-#             #Отправка списка планет
-#             await bot.send_photo(message.from_user.id, ret[0], f'{ret[1]}\nОписание: {ret[2]}')
-#             #Добавление кнопки удалить
-#             await bot.send_message(message.from_user.id, text='^^^', reply_markup=InlineKeyboardMarkup().\
-#                 add(InlineKeyboardButton(f'Удалить {ret[1]}', callback_data=f'del {ret[1]}'))) 
-
 
 #Добавление команд
 def register_handlers_client(dp : Dispatcher):

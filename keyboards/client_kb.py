@@ -37,7 +37,7 @@ first.add(zakaz_biletov, spisok_planet, time_work, place_street, help)
 
 close_keyboard = InlineKeyboardMarkup(row_width=1)
 close_button = InlineKeyboardButton(text='Отмена', callback_data='close')
-close_keyboard.add(close_keyboard)
+close_keyboard.add(close_button)
 
 
 
